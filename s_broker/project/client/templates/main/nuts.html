@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>Example Post AJAX Out get JSON Back</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+      <script>
+      // Just query api/nuts_classify after click, i think
+      $(document).ready(function() {
+        $('form').submit(function (e) {
+            var url = "http://163.221.68.242:5001/api/nuts_classify";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $('form').serialize(), // serializes the form's elements.
+                success: function (data) {
+                  console.log('Success');
+                  var query_id = JSON.stringify(data.query_ID);
+                  var progress = JSON.stringify(data.progress);
+                  var query_received = JSON.stringify(data.query_received);
+                  console.log(data);  // display the returned data in the console.
+                  var success_msg = 'Query: ' + query_id + ', received on ' + query_received + ' finished in ' + progress;
+                  $('#error').html(success_msg);
+                  // alert(data);
+                },
+                error: function (request, status, error) {
+                  console.log('Error');
+                  if(request.status == 616) {
+                    var error_msg = "node count cannot be greater than chunk count!";
+                    $('#error').html(error_msg);
+                    alert(error_msg);
+                  }
+                  console.log(status);
+                  console.log(error);
+                  console.log(request);
+                },
+                complete: function(event, xhr, options) {
+                  // Handle the complete event
+                  // var data = $.httpData(xhr,options.dataType);
+                  // alert(data);
+                  //alert("ajax completed");
+                  console.log("Completed");
+                }
+            });
+            e.preventDefault(); // block the traditional submission of the form.
+        });
+        // Inject our CSRF token into our AJAX request.
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", "{{ form.csrf_token._value() }}")
+                }
+            }
+        })
+      });
+      </script>
+    </head>
+
+    <body>
+    <div id="error">Welcome</div>
+    {% for message in form.node_count.errors %}
+         <div>{{ message }}</div>
+    {% endfor %}
+    {{ form.csrf_token }}
+    <form method="post">
+      {{ form.chunk_count.label }} (1-200)
+      {{ form.chunk_count }}
+      <br>
+      {{ form.node_count.label }} (1-3)
+      {{ form.node_count }}
+      <br>
+      {{ form.model_type.label }}
+      {{ form.model_type }}
+      <br>
+      {{ form.hidden_tag() }}
+      <input type="submit" value="Go"/>
+    </form>
+
+    <!-- Updating table here -->
+    </body>
+  </html>
+
+

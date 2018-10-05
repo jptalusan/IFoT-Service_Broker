@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  s_broker:
+    image: nuc1:5000/frontend-iot
+    build:
+      context: ./s_broker
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    command: python manage.py run -h 0.0.0.0 -p 5001
+    volumes:
+      - ./s_broker:/usr/src/app
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      - FLASK_DEBUG=1
+      - APP_SETTINGS=project.server.config.DevelopmentConfig
+      - WTF_CSRF_ENABLED = False
+    restart: always
+
+networks:
+  bridge:
+    external:
+      name: mynet

@@ -1,0 +1,63 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+<div class="starter-template">
+  <h1>HOME</h1>
+  Hello world!
+  debug: {{ debug }}
+  <br>
+  <button type="button" class="btn btn-primary" data-type="1">Run 10 second task</button>
+  <button type="button" class="checkQueue btn-primary" data-type="1">Check queue</button>
+  <button type="button" class="getAllQueues btn-primary" data-type="1">Get all tasks</button>
+  <br><br>
+  <button type="button" class="getmetas btn-primary" data-type="1">Watch tasks</button>
+  <button type="button" class="test_redis btn-primary" data-type="1">set Redis</button>
+  <button type="button" class="get_redis btn-primary" data-type="1">get Redis</button>
+  <br><br>
+  <button type="button" class="flush_redis btn-primary" data-type="1">Flush Redis</button>
+  <button type="button" class="test_nuts btn-primary" data-type="1">Test_Nuts</button>
+  <br><br>
+  <table style="width:50%">
+    <td><a href={{ url_for('main.iris_classifier') }} target="_blank">iris_classifier</a></td>
+    <td><a href={{ url_for('main.nuts_classifier') }} target="_blank">nuts_classifier</a></td>
+  </table>
+  <br><br>
+</div>
+
+<div class='my-legend'>
+<div class='legend-title'>Task Color Legend *Default = Processor</div>
+<div class='legend-scale'>
+  <ul class='legend-labels'>
+    <li><span style='background:#337CFF;'></span>Running default task</li>
+    <li><span style='background:#E4FF33;'></span>Queued default task</li>
+    <li><span style='background:#33FF55;'></span>Finished default task</li>
+    <li><span style='background:#69E0D3;'></span>Finished aggregator task</li>
+    <li><span style='background:#80B1D3;'></span>etc</li>
+  </ul>
+</div>
+<div class='legend-source'>Source: <a href="#link to source">Name of source</a></div>
+</div>
+
+<div>
+  <h3>Task Status</h3>
+  <div id="status"></div>
+  <br>
+  <table style="width:100%">
+    <thead>
+      <tr  class="header expand">
+        <th colspan="1">Handled Time <span class="sign"></span></th>
+        <th>ID</th>
+        <th>Handler</th>
+        <th>Progress</th>
+        <th>Status</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id="tasks">
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
