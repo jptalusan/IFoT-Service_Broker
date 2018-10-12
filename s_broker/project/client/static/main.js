@@ -152,7 +152,7 @@ function getTaskStatus() {
   })
   .done((res) => {
     var html = '';
-    
+
     var rtask = res.running_tasks;
     var rtask_length = Object.keys(rtask).length;
     var qtask = res.queued_tasks;

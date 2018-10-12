@@ -3,7 +3,7 @@ from flask import send_from_directory, url_for, redirect
 import requests
 from werkzeug.utils import secure_filename
 from ..models.models import Node
-from ..forms.upload_form import UploadForm, TextForm
+from ..forms.upload_form import UploadForm, TextForm, Nuts2Form
 from rq import Queue, Connection
 import redis
 import os
@@ -89,28 +89,31 @@ def nuts_classifier():
 #Later on add choice to control the number of nodes and/or the number of data points/chunks/queries at once
 @main_blueprint.route('/nuts_dist_process', methods=['GET', 'POST'])
 def start_nuts_dist_process():
-  form = TextForm(meta={'csrf_context': request.remote_addr})
-  if form.validate_on_submit():
-    node_count = form.node_count.data
-    chunk_count = form.chunk_count.data
-    model_type = form.model_type.data
-    # node_count = request.args.get("node_count")
-    # model_type = request.args.get("model_type")
-    # chunk_count = request.args.get("chunk_count")
+  form = Nuts2Form()
+  if request.method == 'GET':
+    return render_template('main/nuts2.html', form=form)
+  elif request.method == 'POST':
+    if form.validate_on_submit():
+      node_count = form.node_count.data
+      chunk_count = form.chunk_count.data
+      model_type = form.model_type.data
+      # node_count = request.args.get("node_count")
+      # model_type = request.args.get("model_type")
+      # chunk_count = request.args.get("chunk_count")
 
-    json = {
-            'node_count': node_count,
-            'model_type': model_type,
-            'chunk_count': chunk_count
-            }
+      json = {
+              'node_count': node_count,
+              'model_type': model_type,
+              'chunk_count': chunk_count
+              }
 
-    #Can i not hardcode the link?
-    res = requests.post('http://163.221.68.242:5001/api/nuts_classify', json=json)
+      #Can i not hardcode the link?
+      res = requests.post('http://163.221.68.242:5001/api/nuts2_classify', json=json)
 
-    #Trigger continuous updates here with time
-    return res.text
-  else:
-    return "Error"
+      #Trigger continuous updates here with time
+      return res.text
+    else:
+      return "Error: validate on submit failed"
 
 #Dist
 @main_blueprint.route('/iris_dist_process', methods=['GET', 'POST'])
