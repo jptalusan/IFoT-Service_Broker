@@ -8,6 +8,9 @@
       // Just query api/nuts_classify after click, i think
       $(document).ready(function() {
         $('form').submit(function (e) {
+            var test = $('form').serialize();
+            console.log('hello:');
+            console.log(test);
             var url = "http://163.221.68.242:5001/api/nuts_classify";
             $.ajax({
                 type: "POST",
@@ -71,6 +74,11 @@
       <br>
       {{ form.model_type.label }}
       {{ form.model_type }}
+      <br>
+      <!--
+      {{ form.cluster_address.label }}
+      {{ form.cluster_address }}
+      -->
       <br>
       {{ form.hidden_tag() }}
       <input type="submit" value="Go"/>

@@ -1,5 +1,6 @@
 var isTaskWatchOngoing = false;
-var master1_url = 'http://163.221.68.242:5001'
+var master1_url = 'http://163.221.68.242:5001';
+//var master1_url = 'http://163.221.68.206:5001';
 
 $( document ).ready(() => {
   console.log('Sanity check!');

@@ -7,8 +7,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class BaseConfig(object):
     """Base configuration."""
     WTF_CSRF_ENABLED = True
-    REDIS_URL = 'redis://163.221.68.242:6379/0'
+    REDIS_URL = 'redis://163.221.68.242:6379/0' #Pi4
+    #REDIS_URL = 'redis://163.221.68.206:6379/0' #NUC
     MASTER1 = 'http://163.221.68.242:5001/'
+    #MASTER1 = 'http://163.221.68.206:5001/'
     QUEUES = ['default']
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')

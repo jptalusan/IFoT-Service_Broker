@@ -38,6 +38,10 @@ class TextForm(FlaskForm):
         u'Model type',
         choices = [('NN', 'nn'), ('SVM', 'svm')]
     )
+  cluster_address = SelectField(
+        u'Cluster address',
+        choices = [('pi4', 'Pi-4'), ('pi8', 'Pi-8'), ('nuc', 'Intel NUC')]
+  ) 
   # submit = SubmitField("Process")
 
 class Nuts2Form(FlaskForm):
@@ -47,3 +51,7 @@ class Nuts2Form(FlaskForm):
         u'Model type',
         choices = [('NN', 'nn'), ('SVM', 'svm')]
     )
+  cluster_address = SelectField(
+        u'Cluster address',
+        choices = [('pi4', 'Pi-4'), ('pi8', 'Pi-8'), ('nuc', 'Intel NUC')]
+  ) 

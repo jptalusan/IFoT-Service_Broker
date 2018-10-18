@@ -97,6 +97,7 @@ def start_nuts_dist_process():
       node_count = form.node_count.data
       chunk_count = form.chunk_count.data
       model_type = form.model_type.data
+      cluster_address = form.cluster_address.data
       # node_count = request.args.get("node_count")
       # model_type = request.args.get("model_type")
       # chunk_count = request.args.get("chunk_count")
@@ -108,7 +109,13 @@ def start_nuts_dist_process():
               }
 
       #Can i not hardcode the link?
-      res = requests.post('http://163.221.68.242:5001/api/nuts2_classify', json=json)
+      res = ''
+      if cluster_address == 'pi4':
+        res = requests.post('http://163.221.68.242:5001/api/nuts2_classify', json=json)
+      elif cluster_address == 'pi5':
+        res = requests.post('http://163.221.68.211:5001/api/nuts2_classify', json=json)
+      elif cluster_address == 'nuc':
+        res = requests.post('http://163.221.68.206:5001/api/nuts2_classify', json=json) 
 
       #Trigger continuous updates here with time
       return res.text
