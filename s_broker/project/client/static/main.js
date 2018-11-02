@@ -4,18 +4,7 @@ var master1_url = 'http://163.221.68.242:5001';
 
 $( document ).ready(() => {
   console.log('Sanity check!');
-
-  // var socket = io.connect('http://' + document.domain + ':' + location.port);
-  // socket.on('connect', function() {
-  //   // we emit a connected message to let knwo the client that we are connected.
-  //   socket.emit('client_connected', {data: 'New client!'});
-  // });
-
 });
-
-// socket.on('alert', function (data) {
-//     alert('Alert Message!! ' + data);
-// });
 
 $('.btn').on('click', function() {
   console.log('button clicked!');

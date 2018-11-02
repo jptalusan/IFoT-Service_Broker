@@ -2,7 +2,7 @@ version: '3'
 
 services:
   s_broker:
-    image: nuc1:5000/frontend-ifot
+    image: nuc1:5000/servicebroker-ifot
     build:
       context: ./s_broker
       dockerfile: Dockerfile

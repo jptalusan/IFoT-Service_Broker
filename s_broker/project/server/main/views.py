@@ -3,7 +3,7 @@ from flask import send_from_directory, url_for, redirect
 import requests
 from werkzeug.utils import secure_filename
 from ..models.models import Node
-from ..forms.upload_form import UploadForm, TextForm, Nuts2Form
+from ..forms.upload_form import UploadForm, TextForm, Nuts2Form, DateForm, create_data_form
 from rq import Queue, Connection
 import redis
 import os
@@ -14,6 +14,10 @@ import urllib.request, json
 from flask_cors import CORS, cross_origin
 import csv
 from . import funcs
+
+from datetime import datetime
+from dateutil import tz
+import time
 
 #Move to constants file.
 NODE_COUNT = '_node_count'
@@ -27,6 +31,89 @@ def home():
   n = Node(name='Master')
   print(n)
   return render_template('main/home.html', debug=n)
+
+#https://stackoverflow.com/questions/40963401/flask-dynamic-data-update-without-reload-page
+#Add this step in dt.js and also here. so that it will reload
+
+#also this: https://github.com/saltycrane/flask-jquery-ajax-example inside fjae folder
+#https://stackoverflow.com/questions/34618956/javascript-ajax-to-dynamically-update-wtforms-select-field
+
+#https://stackoverflow.com/questions/233553/how-do-i-pre-populate-a-jquery-datepicker-textbox-with-todays-date
+#need to be able to populate the datefields on button press (jquery)
+@main_blueprint.route('/dt', methods=['GET', 'POST'])
+def dt():
+  # form = DateForm()
+  json = {"influx_ip": '163.221.68.206'}
+  r = requests.get('http://163.221.68.242:5001/api/dt_get', json=json)
+  time_first = r.text.split(",")[0]
+  time_last = r.text.split(",")[1]
+
+  from_zone = tz.tzutc()
+  to_zone = tz.tzlocal()
+
+  # 1537323289425,1533650065704
+
+  ts = int(time_first)
+  ts /= 1000
+  utc = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+  first_local = datetime.strptime(utc, '%Y-%m-%d %H:%M:%S').replace(tzinfo=from_zone).astimezone(to_zone)
+  time_first = first_local.strftime('%Y-%m-%d %H:%M:%S')
+
+  ts = int(time_last)
+  ts /= 1000
+  utc = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+  last_local = datetime.strptime(utc, '%Y-%m-%d %H:%M:%S').replace(tzinfo=from_zone).astimezone(to_zone)
+  time_last = last_local.strftime('%Y-%m-%d %H:%M:%S')
+
+  # st = datetime.strptime("2012-10-10 10:20:40.005", '%Y-%m-%d %H:%M:%S.%f')
+
+  form = create_data_form(first_local, last_local)
+  # return "TEST"
+  if form.is_submitted():
+    print("success submit")
+    if form.validate_on_submit():
+      print("validate_on_submit")
+      start_date = form.start_date.data
+      start_time = form.start_time.data
+      end_date = form.end_date.data
+      end_time = form.end_time.data
+
+      start_date_arr = str(start_date).split("-")
+      start_time_arr = str(start_time).split(":")
+      start_dt = datetime(int(start_date_arr[0]),int(start_date_arr[1]),int(start_date_arr[2]),
+                          int(start_time_arr[0]),int(start_time_arr[1]),0,0)
+
+      start_unixtime = time.mktime(start_dt.timetuple())*1e3 + start_dt.microsecond
+
+      end_date_arr = str(end_date).split("-")
+      end_time_arr = str(end_time).split(":")
+      end_dt = datetime(int(end_date_arr[0]),int(end_date_arr[1]),int(end_date_arr[2]),
+                        int(end_time_arr[0]),int(end_time_arr[1]),59,999)
+
+      end_unixtime = time.mktime(end_dt.timetuple())*1e3 + end_dt.microsecond
+
+      s = int(start_unixtime) * 1e6
+      e = int(end_unixtime) * 1e6
+
+      cluster_address = form.cluster_address.data
+
+      res = ''
+      json = {"start_time":s, "end_time": e}
+      if cluster_address == 'pi4':
+        res = requests.post('http://163.221.68.242:5001/api/heatmap_trigger', json=json)
+      elif cluster_address == 'pi5':
+        res = requests.post('http://163.221.68.211:5001/api/heatmap_trigger', json=json)
+      elif cluster_address == 'nuc':
+        res = requests.post('http://163.221.68.206:5001/api/heatmap_trigger', json=json) 
+
+      return res.text
+    # return str(s) + ',' + str(e)
+  #   return form.dt.data.strftime('%Y-%m-%d')
+
+
+  # last = json.loads(r.text)
+  # last_time_int = last["results"][0]["series"][0]["values"][0][0]
+  return render_template('main/datetime.html', form=form, time_first=time_first, time_last=time_last)
 
 @main_blueprint.route('/upload', methods=['GET', 'POST'])
 def upload():

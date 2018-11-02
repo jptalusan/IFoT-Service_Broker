@@ -1,0 +1,56 @@
+{% extends "_base.html" %}
+
+{% block content %}
+  <h1>Hello, Bootstrap</h1>
+  <br>
+  <!-- <input type="text" id="master_url"/> -->
+
+  <p>The selected value:</p>
+  <select id="myselection">
+    <option value="163.221.68.206">NUC1</option>
+    <option value="163.221.68.191">Sopicha</option>
+  </select>
+  <br><br><hr>
+  <p>Master Node:</p>
+  <select id="master_url">
+    <option value="163.221.68.242">Pi4</option>
+  </select>
+  <br>
+  <button type="button" class="getfirstlast btn-primary" data-type="1">Get first and last datetime</button>
+  <button type="button" class="getdatetime btn-primary" data-type="1">Get date and time on InfluxDB</button>
+  <button type="button" class="btn btn-primary" data-type="1">BTN</button>
+
+  <div class="start_end_times">
+    {{ time_first }} - {{ time_last}}
+  </div>
+
+  {% for message in form.start_date.errors %}
+    <div>{{ message }}</div>
+  {% endfor %}
+
+  {% for message in form.end_date.errors %}
+    <div>{{ message }}</div>
+  {% endfor %}
+
+  {% for message in form.cluster_address.errors %}
+    <div>{{ message }}</div>
+  {% endfor %}
+  <br>
+
+
+  <form method="post">
+    Start Date and Time: {{ form.start_date }} {{ form.start_time }}
+    <br>
+    End Date and Time: {{ form.end_date }} {{ form.end_time }}
+    <br>
+    {{ form.cluster_address.label }}
+    {{ form.cluster_address }}
+    <br>
+    {{ form.hidden_tag() }}
+    <input type="submit" value="Go"/>
+  </form>
+{% endblock %}
+
+{% block js %}
+  <script src="{{url_for('static', filename='dt.js')}}" type="text/javascript"></script>
+{% endblock %}
