@@ -1,0 +1,2 @@
+#For reading .npy files
+numpy==1.14.3

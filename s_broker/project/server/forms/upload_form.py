@@ -64,26 +64,40 @@ class Nuts2Form(FlaskForm):
 def create_data_form(start, end):
   class DateForm(FlaskForm):
       pass
-  # influx_ip = SelectField('Influx address: ', coerce=str, choices=[('sopicha', 'Sopicha'), ('nuc', 'Intel NUC')], validators=[DataRequired()])
+  influx_ip = SelectField('Influx address: ', coerce=str, choices=[('163.221.68.191', 'Sopicha Server'), ('163.221.68.206', 'Intel NUC 1')], validators=[DataRequired()])
 
-  cluster_address = SelectField('Cluster address: ', coerce=str, choices=[('pi4', 'Pi-4'), ('pi8', 'Pi-8'), ('nuc', 'Intel NUC')], validators=[DataRequired()])
+  cluster_address = SelectField('Cluster address: ', coerce=str, choices=[('163.221.68.242', 'Pi-4'), ('pi8', 'Pi-8'), ('163.221.68.206', 'Intel NUC')], validators=[DataRequired()])
+  feature = SelectField('Feature: ', coerce=str, choices=[
+    ('accel_x', 'Accel X'), 
+    ('accel_y', 'Accel Y'), 
+    ('accel_z', 'Accel Z'), 
+    ('heat', 'Heat'), 
+    ('humidity', 'Humidity'), 
+    ('light', 'Light'), 
+    ('noise', 'Noise'), 
+    ('pressure', 'Pressure'), 
+    ('temperature', 'Temperature'), 
+    ('uv', 'UV')], validators=[DataRequired()])
   # st = datetime.datetime.strptime("2001-10-10 10:20:40.005", '%Y-%m-%d %H:%M:%S.%f')
 
-  start_date = DateField('Start date', format='%Y-%m-%d', default=start, validators=[DateRange(
-            min=start.date(),
-            max=end.date()
-        )])
+  start_date = DateField('Start date', format='%Y-%m-%d', default=start)
+    # , validators=[DateRange(
+    #         min=start.date(),
+    #         max=end.date()
+    #     )])
 
   start_time = TimeField('Start time', default=start)
 
-  end_date = DateField('End date', format='%Y-%m-%d', default=end, validators=[DateRange(
-            min=start.date(),
-            max=end.date()
-        )])
+  end_date = DateField('End date', format='%Y-%m-%d', default=end)
+    # , validators=[DateRange(
+    #         min=start.date(),
+    #         max=end.date()
+    #     )])
 
   end_time = TimeField('End time', default=end)
 
-  # setattr(DateForm, "influx_ip", influx_ip)
+  setattr(DateForm, "influx_ip", influx_ip)
+  setattr(DateForm, "feature", feature)
   setattr(DateForm, "cluster_address", cluster_address)
   setattr(DateForm, "start_date", start_date)
   setattr(DateForm, "start_time", start_time)

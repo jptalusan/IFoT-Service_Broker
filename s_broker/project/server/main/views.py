@@ -45,8 +45,8 @@ def dt():
   # form = DateForm()
   json = {"influx_ip": '163.221.68.206'}
   r = requests.get('http://163.221.68.242:5001/api/dt_get', json=json)
-  time_first = r.text.split(",")[0]
-  time_last = r.text.split(",")[1]
+  time_first = r.text.split(";")[0]
+  time_last = r.text.split(";")[1]
 
   from_zone = tz.tzutc()
   to_zone = tz.tzlocal()
@@ -73,46 +73,7 @@ def dt():
     print("success submit")
     if form.validate_on_submit():
       print("validate_on_submit")
-      start_date = form.start_date.data
-      start_time = form.start_time.data
-      end_date = form.end_date.data
-      end_time = form.end_time.data
-
-      start_date_arr = str(start_date).split("-")
-      start_time_arr = str(start_time).split(":")
-      start_dt = datetime(int(start_date_arr[0]),int(start_date_arr[1]),int(start_date_arr[2]),
-                          int(start_time_arr[0]),int(start_time_arr[1]),0,0)
-
-      start_unixtime = time.mktime(start_dt.timetuple())*1e3 + start_dt.microsecond
-
-      end_date_arr = str(end_date).split("-")
-      end_time_arr = str(end_time).split(":")
-      end_dt = datetime(int(end_date_arr[0]),int(end_date_arr[1]),int(end_date_arr[2]),
-                        int(end_time_arr[0]),int(end_time_arr[1]),59,999)
-
-      end_unixtime = time.mktime(end_dt.timetuple())*1e3 + end_dt.microsecond
-
-      s = int(start_unixtime) * 1e6
-      e = int(end_unixtime) * 1e6
-
-      cluster_address = form.cluster_address.data
-
-      res = ''
-      json = {"start_time":s, "end_time": e}
-      if cluster_address == 'pi4':
-        res = requests.post('http://163.221.68.242:5001/api/heatmap_trigger', json=json)
-      elif cluster_address == 'pi5':
-        res = requests.post('http://163.221.68.211:5001/api/heatmap_trigger', json=json)
-      elif cluster_address == 'nuc':
-        res = requests.post('http://163.221.68.206:5001/api/heatmap_trigger', json=json) 
-
-      return res.text
-    # return str(s) + ',' + str(e)
-  #   return form.dt.data.strftime('%Y-%m-%d')
-
-
-  # last = json.loads(r.text)
-  # last_time_int = last["results"][0]["series"][0]["values"][0][0]
+      feature  = form.feature.data
   return render_template('main/datetime.html', form=form, time_first=time_first, time_last=time_last)
 
 @main_blueprint.route('/upload', methods=['GET', 'POST'])

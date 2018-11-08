@@ -10,6 +10,7 @@ WORKDIR /usr/src/app
 
 # add requirements (to leverage Docker cache)
 ADD ./requirements.txt /usr/src/app/requirements.txt
+ADD ./requirements-np.txt /usr/src/app/requirements-np.txt
 
 RUN apt-get -y install libc-dev
 RUN apt-get -y install build-essential
@@ -17,3 +18,4 @@ RUN pip install -U pip
 
 # install requirements
 RUN pip install -r requirements.txt
+RUN pip install -r requirements-np.txt
