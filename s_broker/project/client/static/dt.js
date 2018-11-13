@@ -33,8 +33,6 @@ $( document ).ready(() => {
     var dictionary = {};
 
     obj.forEach(function(item){
-      // console.log('name: ' + item.name);
-      // console.log('value: ' + item.value);
       dictionary[item.name] = item.value;
     });
     
@@ -49,30 +47,14 @@ $( document ).ready(() => {
     var start_date = new Date(dictionary["start_date"]);
     var end_date = new Date(dictionary["end_date"]);
 
-    // console.log(start_date_lim);
-    // console.log(start_date);
-
-    // console.log(end_date_lim);
-    // console.log(end_date);
     if ((start_date < start_date_lim) || (end_date > end_date_lim)) {
       console.log("ERROR!");
       $(".SVG_container").text("Date is either before available start date or after available end date");
     } else {
       console.log("OK!");
       //Check if limits are reached.
-
-
-
       getTaskStatus(dictionary);
     }
-
-    // console.log("start_lim: " + start_lim);
-    // console.log("end_lim: " + end_lim);
-
-    // console.log('Dict:', dictionary);
-
-    // console.log(formData);
-    // console.log('form_data:' + form_data);
   });
 });
 
@@ -240,47 +222,8 @@ function query_task_id(task_id) {
 
         // Parsing JSON
         console.log(data);
-        // var parsed_data = JSON.parse(data);
         var json_svg_data = data.data.task_result.svg_data;
         generate_svg_image(json_svg_data);
-        // console.log(data.data.task_result.svg_data.data[0].id);
-        // $(".SVG_container").html(data);
-
-
-
-        // Changing data!
-        //Parse json and change values every time function is called. do it in a loop
-
-        // var svg = data.data.task_result.svg_data;
-        // var parser = new DOMParser();
-        // var doc = parser.parseFromString(svg, "image/svg+xml");
-        // doc.getElementsByTagName("text")[0].innerHTML = 'TAE';
-
-        // // console.log(doc.getElementsByTagName("g"));
-        // var g_arr = doc.getElementsByTagName("g");
-        // var i;
-        // for (i = 0; i < g_arr.length; ++i) {
-        //   var cont_arr = g_arr[i].getElementsByClassName('container');
-        //   if (cont_arr.length != 0) {
-        //     var j;
-        //     for (j = 0; j < cont_arr.length; ++j) {
-        //       cont_arr[j].getElementsByTagName("text")[0].textContent = "HEY";
-        //       var cont_id = cont_arr[j].getElementsByTagName("circle")[0].id;
-        //       // console.log(cont_arr[j].getElementsByTagName("text")[0]);
-        //       console.log(cont_id);
-        //       cont_arr[j].getElementsByTagName("circle")[0].setAttribute('r', 200.0);
-        //       var r = cont_arr[j].getElementsByTagName("circle")[0].getAttribute('r');
-
-        //       // console.log(r);
-        //       // console.log(cont_arr[j].getElementsByTagName("circle")[0]);
-        //     }
-        //   }
-        // }
-        // var s = new XMLSerializer();
-        // var newXmlStr = s.serializeToString(doc);
-
-        // $(".SVG_container").html(newXmlStr);
-        // $('#title').string = "TEST";
       }
     }
   });
@@ -397,8 +340,6 @@ $('.getdatetime').on('click', function() {
   .done((res) => {
     console.log(res);
     $('<p>' + res + '</p>').appendTo('#Content');
-    // console.log(res.unique_ID);
-    // console.log(res.data.task_id);
   })
   .fail((err) => {
     console.log(err.responseText);
